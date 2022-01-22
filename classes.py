@@ -260,7 +260,7 @@ class time_var_eff:
 class site:
     def __init__(self, name='', commodities=[], processes=[], transmissions=[], storages=[], demands=[], supim=[],
                  buy_sell_prices=[], time_var_eff=[], area='', base_voltage='', min_voltage='', ref_node='', pp_id=0,
-                 urbs_name='', building_id=0):
+                 building_id=0):
         self.name = name
         self.commodities = commodities
         self.processes = processes
@@ -275,5 +275,4 @@ class site:
         self.min_voltage = min_voltage
         self.ref_node = ref_node
         self.pp_id = pp_id
-        self.urbs_name = urbs_name
         self.building_id = building_id

@@ -1,14 +1,20 @@
 from classes import commodity, process, transmisson, storage
+from get_building_data import get_building_data
 
 
 save_path = './urbs-test.xlsx'                      # path to save exported excel file
 building_data_file_path = './building_data2.csv'    # path of building information file
 pandapower_networks_path = './pandapower-networks'  # path which includes pandapower network files
-selected_building_path = './selected_buildings.csv' # path of selected buildings file
+selected_buildings_path = './selected_buildings.csv' # path of selected buildings file
 timeseries_path = './time_series_per_building'      # path which includes building informations in time series
 
 # define some building relevanted parameters
+building_data = get_building_data(building_data_file_path, selected_buildings_path)
 
+charging_station_inst_cap = [i * 11 for i in building_data['number_of_cars'].tolist()]
+charging_station_cap_up = [i * 11 for i in building_data['number_of_cars'].tolist()]
+mobility_storage_inst_cap_c = [i * 100 for i in building_data['car_demand_daily_total_MW'].tolist()]
+mobility_storage_cap_up_c = [i * 100 for i in building_data['car_demand_daily_total_MW'].tolist()]
 
 # define global information
 co2_limit = '0'
@@ -37,7 +43,7 @@ electricity_feed_in = commodity(name='electricity_feed_in', type='Sell', price='
 trafo_commodities = [electricity, electricity_feed_in, electricity_import]      # add commodities at trafo-station here
 main_busbar_commodities = [electricity]     # add commodities at main busbar here
 load_commodities = [electricity, space_heat, water_heat, mobility, natural_gas, common_heat, solar, co2]    # add commodities at every load here
-building_relevant_commodities = []
+building_relevant_commodities = []  # place of commodity in load_commodities list, attribute of commodity, value of attribute
 
 
 # define processes
@@ -55,7 +61,7 @@ curtailment = process(name='curtailment', com_in=[electricity])
 trafo_processes = [import_trafo, feed_in, slack]    # add processes at trafo-station here
 main_busbar_processes = []      # add processes at main busbar here
 load_processes = [rooftop_pv, gas_boiler, heat_dummy_space, heat_dummy_water, heatpump_air, charging_station, curtailment]     # add processes at every load here
-building_relevant_processes = [(5, 'inst_cap', number_of_cars)]    # place of process in load_process list, attribute of process, value of attribute
+building_relevant_processes = [(5, 'inst_cap', charging_station_inst_cap), (5, 'cap_up', charging_station_cap_up)]    # place of process in load_processes list, attribute of process, value of attribute
 
 
 # define transmissions
@@ -77,12 +83,10 @@ mobility_storage = storage(name='mobility_storage', commodity=mobility)
 trafo_storages = []     # add storages at trafo-station here
 main_busbar_storages = []       # add storages at main busbar here
 load_storages = [battery_private, thermochem_heat_storage, mobility_storage]    # add storages at every load here
-building_relevant_storages = []
+building_relevant_storages = [(2, 'inst_cap_c', mobility_storage_inst_cap_c), (2, 'cap_up_c', mobility_storage_cap_up_c)]     # place of storage in load_storages list, attribute of storage, value of attribute
 
 
 # # get building time series
-# timeseries_folder_path = '/Users/chujiahe/Desktop/network-data/Gebäuden/time_series_per_building'
-
 # needed_demand_name = ['HotWaterD_W', 'SpaceHeatingD_W', 'TotalD_W']
 # demand_commodities = [water_heat, space_heat, electricity]
 
