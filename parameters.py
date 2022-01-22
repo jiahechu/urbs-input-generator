@@ -1,12 +1,22 @@
+from pyparsing import col
 from classes import commodity, process, transmisson, storage
 from get_building_data import get_building_data
+import pandas as pd
 
 
 save_path = './urbs-test.xlsx'                      # path to save exported excel file
-building_data_file_path = './building_data2.csv'    # path of building information file
-pandapower_networks_path = './pandapower-networks'  # path which includes pandapower network files
-selected_buildings_path = './selected_buildings.csv' # path of selected buildings file
+building_data_file_path = './dataset/building_data/building_data2.csv'    # path of building information file
+pandapower_networks_path = './dataset/pandapower-networks/kerber_landnetz_freileitung_1'  # path which includes pandapower network files
+selected_buildings_path = './dataset/selected_buildings.csv' # path of selected buildings file
 timeseries_path = './time_series_per_building'      # path which includes building informations in time series
+
+com_conf_path = './dataset/conf/com_conf.csv'
+pro_conf_path = './dataset/conf/pro_conf.csv'
+sto_conf_path = './dataset/conf/sto_conf.csv'
+com_prop_path = './dataset/prop/com_prop.csv'
+pro_prop_path = './dataset/prop/pro_prop.csv'
+sto_prop_path = './dataset/prop/sto_prop.csv'
+
 
 # define some building relevanted parameters
 building_data = get_building_data(building_data_file_path, selected_buildings_path)
@@ -30,39 +40,44 @@ elec_feed_in_price = '0,07'
 
 # define commodities
 electricity = commodity(name='electricity', type='Demand')
-space_heat = commodity(name='space_heat', type='Demand')
-water_heat = commodity(name='water_heat', type='Demand')
-mobility = commodity(name='mobility', type='Demand')
-natural_gas = commodity(name='natural_gas', type='Stock', price='0', max='inf', max_per_hour='inf')
-common_heat = commodity(name='common_heat', type='Stock', price='0', max='0', max_per_hour='0')
-solar = commodity(name='solar', type='SupIm')
-co2 = commodity(name='CO2', type='Env')
 electricity_import = commodity(name='electricity_import', type='Buy', price='1', max='inf', max_per_hour='inf')
 electricity_feed_in = commodity(name='electricity_feed_in', type='Sell', price='1', max='inf', max_per_hour='inf')
 
 trafo_commodities = [electricity, electricity_feed_in, electricity_import]      # add commodities at trafo-station here
 main_busbar_commodities = [electricity]     # add commodities at main busbar here
-load_commodities = [electricity, space_heat, water_heat, mobility, natural_gas, common_heat, solar, co2]    # add commodities at every load here
+load_commodities = []    # add commodities at every load here
 building_relevant_commodities = []  # place of commodity in load_commodities list, attribute of commodity, value of attribute
+
+com_conf = pd.read_csv(com_conf_path, sep=';')
+com_prop = pd.read_csv(com_prop_path, sep=';')
+
+for i in range(len(com_prop['name'])):
+    com = commodity()
+    for column in com_prop.columns.tolist():
+        com.set_attr_value(column, com_prop[column][i])
+    load_commodities.append(com)
+    building_relevant_commodities.append((i, 'exist', com_conf[com_prop['name'][i]]))
 
 
 # define processes
 import_trafo = process(name='import', com_in=[electricity_import], com_out=[electricity])
 feed_in = process(name='feed_in', com_in=[electricity], com_out=[electricity_feed_in])
 slack = process(name='Slack', com_in=[electricity], com_out=[electricity])
-rooftop_pv = process(name='Rooftop PV', com_in=[solar], com_out=[electricity])
-gas_boiler = process(name='Gas Boiler', com_in=[natural_gas], com_out=[common_heat, co2])
-heat_dummy_space = process(name='Heat_dummy_space', com_in=[common_heat], com_out=[space_heat])
-heat_dummy_water = process(name='Heat_dummy_space', com_in=[common_heat], com_out=[water_heat])
-heatpump_air = process(name='heatpump_air', com_in=[electricity], com_out=[common_heat])
-charging_station = process(name='charging_station', com_in=[electricity], com_out=[mobility])
-curtailment = process(name='curtailment', com_in=[electricity])
 
 trafo_processes = [import_trafo, feed_in, slack]    # add processes at trafo-station here
 main_busbar_processes = []      # add processes at main busbar here
-load_processes = [rooftop_pv, gas_boiler, heat_dummy_space, heat_dummy_water, heatpump_air, charging_station, curtailment]     # add processes at every load here
+load_processes = []     # add processes at every load here
 building_relevant_processes = [(5, 'inst_cap', charging_station_inst_cap), (5, 'cap_up', charging_station_cap_up)]    # place of process in load_processes list, attribute of process, value of attribute
 
+pro_conf = pd.read_csv(pro_conf_path, sep=';')
+pro_prop = pd.read_csv(pro_prop_path, sep=';')
+
+for i in range(len(pro_prop['name'])):
+    pro = process()
+    for column in pro_prop.columns.tolist():
+        pro.set_attr_value(column, pro_prop[column][i])
+    load_processes.append(pro)
+    building_relevant_processes.append((i, 'exist', pro_conf[pro_prop['name'][i]]))
 
 # define transmissions
 trafo = transmisson(name='trafo', commodity=electricity)
@@ -76,14 +91,20 @@ trafo_transmissions = [trafo, new_trafo_160, new_trafo_250, new_trafo_400, new_t
 
 
 # define storages
-battery_private = storage(name='battery_private', commodity=electricity)
-thermochem_heat_storage = storage(name='thermochem_heat_storage', commodity=common_heat)
-mobility_storage = storage(name='mobility_storage', commodity=mobility)
-
 trafo_storages = []     # add storages at trafo-station here
 main_busbar_storages = []       # add storages at main busbar here
-load_storages = [battery_private, thermochem_heat_storage, mobility_storage]    # add storages at every load here
+load_storages = []    # add storages at every load here
 building_relevant_storages = [(2, 'inst_cap_c', mobility_storage_inst_cap_c), (2, 'cap_up_c', mobility_storage_cap_up_c)]     # place of storage in load_storages list, attribute of storage, value of attribute
+
+sto_conf = pd.read_csv(sto_conf_path, sep=';')
+sto_prop = pd.read_csv(sto_prop_path, sep=';')
+
+for i in range(len(sto_prop['name'])):
+    sto = storage()
+    for column in sto_prop.columns.tolist():
+        sto.set_attr_value(column, sto_prop[column][i])
+    load_storages.append(sto)
+    building_relevant_storages.append((i, 'exist', sto_conf[sto_prop['name'][i]]))
 
 
 # # get building time series

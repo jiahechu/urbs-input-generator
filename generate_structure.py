@@ -1,26 +1,11 @@
 from distutils.command.build import build
 from json import loads
+from unicodedata import name
 from parameters import *
 from classes import *
 from copy import deepcopy
 import pandas as pd
 
-
-# assign network file
-if kerber_network_name == 'ln-f1':
-    pandapower_networks_path += 'kerber_landnetz_freileitung_1.xlsx'
-if kerber_network_name == 'ln-f2':
-    pandapower_networks_path += 'kerber_landnetz_freileitung_2.xlsx'
-if kerber_network_name == 'ln-k1':
-    pandapower_networks_path += 'kerber_landnetz_kabel_1.xlsx'
-if kerber_network_name == 'ln-k2':
-    pandapower_networks_path += 'kerber_landnetz_kabel_2.xlsx'
-if kerber_network_name == 'vn-k1':
-    pandapower_networks_path += 'kerber_vorstadtnetz_kabel_1.xlsx'
-if kerber_network_name == 'vn-k1':
-    pandapower_networks_path += 'kerber_vorstadtnetz_kabel_2.xlsx'
-if kerber_network_name == 'dn':
-    pandapower_networks_path += 'kerber_dorfnetz.xlsx'
 
 # generate sites
 site_trafo = site(name='Trafostation_OS', pp_id=0)
@@ -56,7 +41,6 @@ for load in sites_load:
         for br_pro in building_relevant_processes:
             load.processes[br_pro[0]].set_attr_value(br_pro[1], br_pro[2][i])
     i += 1
-
 
 # assign transmissions to sites
 

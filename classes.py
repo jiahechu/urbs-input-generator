@@ -2,12 +2,13 @@ from typing import Match
 
 
 class commodity:
-    def __init__(self, name='', type='', price='', max='inf', max_per_hour='inf'):
+    def __init__(self, name='', type='', price='', max='inf', max_per_hour='inf', exist=1):
         self.name = name
         self.type = type
         self.price = price
         self.max = max
         self.max_per_hour = max_per_hour
+        self.exist = exist
 
     def set_attr_value(self, attr, value):
         if attr == 'name':
@@ -20,6 +21,8 @@ class commodity:
             self.max = value
         elif attr == 'max_per_hour':
             self.max_per_hour = value
+        elif attr == 'exist':
+            self.exist = value
         else:
             raise ValueError('no valid attribute found')
 
@@ -28,7 +31,7 @@ class process:
     def __init__(self, name='', inst_cap='0', cap_lo='0', cap_up='inf', max_grad='inf', ramp_down_grad='0',
                  min_fraction='0', inv_cost='0', fix_cost='0', var_cost='0', wacc='0.07', depreciation='30',
                  area_per_cap='', cap_block='', start_price='',	on_off='', pf_min='', com_in=[],
-                 com_out=[], ratio='', ratio_min='0'):
+                 com_out=[], ratio='', ratio_min='0', exist=1):
         self.name = name
         self.inst_cap = inst_cap
         self.cap_lo = cap_lo
@@ -50,6 +53,7 @@ class process:
         self.com_out = com_out
         self.ratio = ratio
         self.ratio_min = ratio_min
+        self.exist = exist
 
     def set_attr_value(self, attr, value):
         if attr == 'name':
@@ -94,6 +98,8 @@ class process:
             self.ratio = value
         elif attr == 'ratio_min':
             self.ratio_min = value
+        elif attr == 'exist':
+            self.exist = value
         else:
             raise ValueError('no valid attribute found')
 
@@ -101,7 +107,7 @@ class process:
 class transmisson:
     def __init__(self, name='', site_in='', site_out='', commodity=commodity(), eff='1', inv_cost='0',
                  fix_cost='0', var_cost='0', inst_cap='0', cap_lo='0', cap_up='inf', wacc='0.07', depreciation='30',
-                 reactance='', difflimit='', base_voltage='', tra_block=''):
+                 reactance='', difflimit='', base_voltage='', tra_block='',exist=1):
         self.name = name
         self.site_in = site_in
         self.site_out = site_out
@@ -119,6 +125,7 @@ class transmisson:
         self.difflimit = difflimit
         self.base_voltage = base_voltage
         self.tra_block = tra_block
+        self.exist = exist
     
     def set_attr_value(self, attr, value):
         if attr == 'name':
@@ -155,6 +162,8 @@ class transmisson:
             self.base_voltage = value
         elif attr == 'tra_block':
             self.tra_block = value
+        elif attr == 'exist':
+            self.exist = value
         else:
             raise ValueError('no valid attribute found')
 
@@ -163,7 +172,7 @@ class storage:
     def __init__(self, name='', commodity=commodity(), inst_cap_c='0', cap_lo_c='0', cap_up_c='inf', 
                  inst_cap_p='0', cap_lo_p='0', cap_up_p='inf', eff_in='1', eff_out='1', inv_cost_p='0', inv_cost_c='0',
                  fix_cost_p='0', fix_cost_c='0', var_cost_p='0', var_cost_c='0', wacc='0.07', depreciation='20',
-                 init='', discharge='0', ep_ratio='3', c_block='', p_block=''):
+                 init='', discharge='0', ep_ratio='3', c_block='', p_block='', exist=1):
         self.name = name
         self.commodity = commodity
         self.inst_cap_p = inst_cap_p
@@ -187,6 +196,7 @@ class storage:
         self.ep_ratio = ep_ratio
         self.c_block = c_block
         self.p_block = p_block
+        self.exist = exist
 
     def set_attr_value(self, attr, value):
         if attr == 'name':
@@ -235,6 +245,8 @@ class storage:
             self.c_block = value
         elif attr == 'p_block':
             self.p_block = value
+        elif attr == 'exist':
+            self.exist = value
         else:
             raise ValueError('no valid attribute found')
 
