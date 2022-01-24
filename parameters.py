@@ -3,10 +3,10 @@ from get_building_data import get_building_data
 
 
 save_path = './urbs-test.xlsx'                      # path to save exported excel file
-building_data_file_path = './building_data2.csv'    # path of building information file
-pandapower_networks_path = './pandapower-networks'  # path which includes pandapower network files
-selected_buildings_path = './selected_buildings.csv' # path of selected buildings file
-timeseries_path = './time_series_per_building'      # path which includes building informations in time series
+building_data_file_path = './dataset/building_data/building_data2.csv'    # path of building information file
+pandapower_networks_path = './dataset/pandapower-networks'  # path which includes pandapower network files
+selected_buildings_path = './dataset/selected_buildings.csv' # path of selected buildings file
+timeseries_path = './dataset/building_data/time_series_per_building'      # path which includes building informations in time series
 
 # define some building relevanted parameters
 building_data = get_building_data(building_data_file_path, selected_buildings_path)
@@ -70,7 +70,6 @@ new_trafo_160 = transmisson(name='new_trafo_160', commodity=electricity)
 new_trafo_250 = transmisson(name='new_trafo_250', commodity=electricity)
 new_trafo_400 = transmisson(name='new_trafo_400', commodity=electricity)
 new_trafo_630 = transmisson(name='new_trafo_630', commodity=electricity)
-# hvac = transmisson(name='hvac', commodity=electricity)
 
 trafo_transmissions = [trafo, new_trafo_160, new_trafo_250, new_trafo_400, new_trafo_630]   # add transmissions at trafo-station here
 
@@ -86,12 +85,12 @@ load_storages = [battery_private, thermochem_heat_storage, mobility_storage]    
 building_relevant_storages = [(2, 'inst_cap_c', mobility_storage_inst_cap_c), (2, 'cap_up_c', mobility_storage_cap_up_c)]     # place of storage in load_storages list, attribute of storage, value of attribute
 
 
-# # get building time series
-# needed_demand_name = ['HotWaterD_W', 'SpaceHeatingD_W', 'TotalD_W']
-# demand_commodities = [water_heat, space_heat, electricity]
+# get building time series
+needed_demand_name = ['HotWaterD_W', 'SpaceHeatingD_W', 'TotalD_W']
+demand_commodities = [water_heat, space_heat, electricity]
 
-# needed_supim_name = ['sol_gains_W']
-# supim_commodities = [solar]
+needed_supim_name = ['sol_gains_W']
+supim_commodities = [solar]
 
-# needed_timevareff_name = ['Occupants']
-# timevareff_processes = [charging_station]
+needed_timevareff_name = ['Occupants']
+timevareff_processes = [charging_station]

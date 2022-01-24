@@ -8,19 +8,19 @@ import pandas as pd
 
 # assign network file
 if kerber_network_name == 'ln-f1':
-    pandapower_networks_path += 'kerber_landnetz_freileitung_1.xlsx'
+    pandapower_networks_path += '/kerber_landnetz_freileitung_1.xlsx'
 if kerber_network_name == 'ln-f2':
-    pandapower_networks_path += 'kerber_landnetz_freileitung_2.xlsx'
+    pandapower_networks_path += '/kerber_landnetz_freileitung_2.xlsx'
 if kerber_network_name == 'ln-k1':
-    pandapower_networks_path += 'kerber_landnetz_kabel_1.xlsx'
+    pandapower_networks_path += '/kerber_landnetz_kabel_1.xlsx'
 if kerber_network_name == 'ln-k2':
-    pandapower_networks_path += 'kerber_landnetz_kabel_2.xlsx'
+    pandapower_networks_path += '/kerber_landnetz_kabel_2.xlsx'
 if kerber_network_name == 'vn-k1':
-    pandapower_networks_path += 'kerber_vorstadtnetz_kabel_1.xlsx'
+    pandapower_networks_path += '/kerber_vorstadtnetz_kabel_1.xlsx'
 if kerber_network_name == 'vn-k1':
-    pandapower_networks_path += 'kerber_vorstadtnetz_kabel_2.xlsx'
+    pandapower_networks_path += '/kerber_vorstadtnetz_kabel_2.xlsx'
 if kerber_network_name == 'dn':
-    pandapower_networks_path += 'kerber_dorfnetz.xlsx'
+    pandapower_networks_path += '/kerber_dorfnetz.xlsx'
 
 # generate sites
 site_trafo = site(name='Trafostation_OS', pp_id=0)
@@ -58,7 +58,32 @@ for load in sites_load:
     i += 1
 
 
-# assign transmissions to sites
+# assign transmissions to trafo and main busbar
+site_trafo.transmissions = deepcopy(trafo_transmissions)
+for tra in site_trafo.transmissions:
+    tra.site_in = site_trafo.name
+    tra.site_out = site_main_busbar.name
+
+site_main_busbar.transmissions = deepcopy(trafo_transmissions)
+for tra in site_main_busbar.transmissions:
+    tra.site_out = site_trafo.name
+    tra.site_in = site_main_busbar.name
+
+
+# generate transmissions between loads according to the pandapower file
+load_transmissions = []
+pp_file_tra = pd.read_excel(pandapower_networks_path, sheet_name='line')
+for i in pp_file_tra.index:
+    tra = pp_file_tra.iloc[i]
+    site_in = tra['from_bus']
+    site_out = tra['to_bus']
+    if site_in == 1:
+        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in='main_busbar', site_out=selected_buildings.iloc[site_out-2]['urbs_name']))
+        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_out-2]['urbs_name'], site_out='main_busbar'))
+    else:
+        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_in-2]['urbs_name'], site_out=selected_buildings.iloc[site_out-2]['urbs_name']))
+        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_out-2]['urbs_name'], site_out=selected_buildings.iloc[site_in-2]['urbs_name']))
+
 
 
 # assign storages to sites
