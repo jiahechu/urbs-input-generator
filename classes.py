@@ -105,7 +105,7 @@ class process:
 
 
 class transmisson:
-    def __init__(self, name='', site_in='', site_out='', commodity=commodity(), eff='1', inv_cost='0',
+    def __init__(self, name='', site_in='', site_out='', commodity='', eff='1', inv_cost='0',
                  fix_cost='0', var_cost='0', inst_cap='0', cap_lo='0', cap_up='inf', wacc='0.07', depreciation='30',
                  reactance='', difflimit='', base_voltage='', tra_block='',exist=1):
         self.name = name
@@ -169,7 +169,7 @@ class transmisson:
 
 
 class storage:
-    def __init__(self, name='', commodity=commodity(), inst_cap_c='0', cap_lo_c='0', cap_up_c='inf', 
+    def __init__(self, name='', commodity='', inst_cap_c='0', cap_lo_c='0', cap_up_c='inf', 
                  inst_cap_p='0', cap_lo_p='0', cap_up_p='inf', eff_in='1', eff_out='1', inv_cost_p='0', inv_cost_c='0',
                  fix_cost_p='0', fix_cost_c='0', var_cost_p='0', var_cost_c='0', wacc='0.07', depreciation='20',
                  init='', discharge='0', ep_ratio='3', c_block='', p_block='', exist=1):

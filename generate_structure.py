@@ -42,7 +42,32 @@ for load in sites_load:
             load.processes[br_pro[0]].set_attr_value(br_pro[1], br_pro[2][i])
     i += 1
 
-# assign transmissions to sites
+
+# assign transmissions to trafostation and main busbar
+site_trafo.transmissions = deepcopy(trafo_transmissions)
+for tra in site_trafo.transmissions:
+    tra.site_in = site_trafo.name
+    tra.site_out = site_main_busbar.name
+
+site_main_busbar.transmissions = deepcopy(trafo_transmissions)
+for tra in site_main_busbar.transmissions:
+    tra.site_out = site_trafo.name
+    tra.site_in = site_main_busbar.name
+
+
+# generate transmissions between loads according to the pandapower file
+load_transmissions = []
+pp_file_tra = pd.read_excel(pandapower_networks_path, sheet_name='line')
+for i in pp_file_tra.index:
+    tra = pp_file_tra.iloc[i]
+    site_in = tra['from_bus']
+    site_out = tra['to_bus']
+    if site_in == 1:
+        load_transmissions.append(transmisson(name=tra['name'], commodity='electricity', site_in='main_busbar', site_out=selected_buildings.iloc[site_out-2]['urbs_name']))
+        load_transmissions.append(transmisson(name=tra['name'], commodity='electricity', site_in=selected_buildings.iloc[site_out-2]['urbs_name'], site_out='main_busbar'))
+    else:
+        load_transmissions.append(transmisson(name=tra['name'], commodity='electricity', site_in=selected_buildings.iloc[site_in-2]['urbs_name'], site_out=selected_buildings.iloc[site_out-2]['urbs_name']))
+        load_transmissions.append(transmisson(name=tra['name'], commodity='electricity', site_in=selected_buildings.iloc[site_out-2]['urbs_name'], site_out=selected_buildings.iloc[site_in-2]['urbs_name']))
 
 
 # assign storages to sites
@@ -57,20 +82,8 @@ for load in sites_load:
     i += 1
 
 
-# # get building demand time series
-# for i in range(len(needed_demand_name)):
-#     for load in sites_load:
-#         timeseries_file_name = timeseries_path+'/BuildingHeatDemand_3.0_2.0_0.0_bID-'+str(load.building_id)+'.0.csv'
-#         load.demands.append(demand(commodity=demand_commodities[i], value=pd.read_csv(timeseries_file_name)[needed_demand_name[i]]))
+# get building demand time series
 
-# # get building supim time series
-# for i in range(len(needed_supim_name)):
-#     for load in sites_load:
-#         timeseries_file_name = timeseries_path+'/BuildingHeatDemand_3.0_2.0_0.0_bID-'+str(load.building_id)+'.0.csv'
-#         load.demands.append(supim(commodity=supim_commodities[i], value=pd.read_csv(timeseries_file_name)[needed_supim_name[i]]))
+# get building supim time series
 
-# # get building time-var-eff time series
-# for i in range(len(needed_timevareff_name)):
-#     for load in sites_load:
-#         timeseries_file_name = timeseries_path+'/BuildingHeatDemand_3.0_2.0_0.0_bID-'+str(load.building_id)+'.0.csv'
-#         load.demands.append(time_var_eff(process=timevareff_processes[i], value=pd.read_csv(timeseries_file_name)[needed_timevareff_name[i]]))
+# get building time-var-eff time series

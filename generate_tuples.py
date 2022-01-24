@@ -60,15 +60,25 @@ process_commodity_df = pd.read_csv('./dataset/prop/pro_com_prop.csv',sep=';')
 
 # generate transmission sheet tuple
 transmission_tuple = []
-# for tra in site_trafo.transmissions:
-#     transmission_tuple.append((tra.site_in, tra.site_out, tra.name, tra.commodity.name, tra.eff, tra.inv_cost, tra.fix_cost, tra.var_cost,
-#                               tra.inst_cap, tra.cap_lo, tra.cap_up, tra.wacc, tra.depreciation, tra.reactance, tra.difflimit, tra.base_voltage,
-#                               tra.tra_block))
+for tra in site_trafo.transmissions:
+    transmission_tuple.append((tra.site_in, tra.site_out, tra.name, tra.commodity, tra.eff, tra.inv_cost, tra.fix_cost, tra.var_cost,
+                              tra.inst_cap, tra.cap_lo, tra.cap_up, tra.wacc, tra.depreciation, tra.reactance, tra.difflimit, tra.base_voltage,
+                              tra.tra_block))
 
-# transmission_df = pd.DataFrame(transmisson_tuple, columns=['Site In', 'Site Out', 'Transmission', 'Commodity', 'eff', 'inv-cost', 'fix-cost', 'var-cost',
-#                                                           'inst-cap', 'cap-lo', 'cap-up', 'wacc', 'depreciation', 'reactance', 'difflimit', 'base_voltage',
-#                                                           'tra-block'])
-transmission_df = pd.DataFrame(transmission_tuple)
+for tra in site_main_busbar.transmissions:
+    transmission_tuple.append((tra.site_in, tra.site_out, tra.name, tra.commodity, tra.eff, tra.inv_cost, tra.fix_cost, tra.var_cost,
+                              tra.inst_cap, tra.cap_lo, tra.cap_up, tra.wacc, tra.depreciation, tra.reactance, tra.difflimit, tra.base_voltage,
+                              tra.tra_block))
+                            
+for tra in load_transmissions:
+    transmission_tuple.append((tra.site_in, tra.site_out, tra.name, tra.commodity, tra.eff, tra.inv_cost, tra.fix_cost, tra.var_cost,
+                              tra.inst_cap, tra.cap_lo, tra.cap_up, tra.wacc, tra.depreciation, tra.reactance, tra.difflimit, tra.base_voltage,
+                              tra.tra_block))
+
+transmission_df = pd.DataFrame(transmission_tuple, columns=['Site In', 'Site Out', 'Transmission', 'Commodity', 'eff', 'inv-cost', 'fix-cost', 'var-cost',
+                                                          'inst-cap', 'cap-lo', 'cap-up', 'wacc', 'depreciation', 'reactance', 'difflimit', 'base_voltage',
+                                                          'tra-block'])
+
 
 # generate storage sheet tuple
 storage_tuple = []

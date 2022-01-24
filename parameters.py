@@ -6,7 +6,7 @@ import pandas as pd
 
 save_path = './urbs-test.xlsx'                      # path to save exported excel file
 building_data_file_path = './dataset/building_data/building_data2.csv'    # path of building information file
-pandapower_networks_path = './dataset/pandapower-networks/kerber_landnetz_freileitung_1'  # path which includes pandapower network files
+pandapower_networks_path = './dataset/pandapower-networks/kerber_landnetz_freileitung_1.xlsx'  # path which includes pandapower network files
 selected_buildings_path = './dataset/selected_buildings.csv' # path of selected buildings file
 timeseries_path = './time_series_per_building'      # path which includes building informations in time series
 
@@ -67,7 +67,7 @@ slack = process(name='Slack', com_in=[electricity], com_out=[electricity])
 trafo_processes = [import_trafo, feed_in, slack]    # add processes at trafo-station here
 main_busbar_processes = []      # add processes at main busbar here
 load_processes = []     # add processes at every load here
-building_relevant_processes = [(5, 'inst_cap', charging_station_inst_cap), (5, 'cap_up', charging_station_cap_up)]    # place of process in load_processes list, attribute of process, value of attribute
+building_relevant_processes = []    # place of process in load_processes list, attribute of process, value of attribute
 
 pro_conf = pd.read_csv(pro_conf_path, sep=';')
 pro_prop = pd.read_csv(pro_prop_path, sep=';')
@@ -77,15 +77,18 @@ for i in range(len(pro_prop['name'])):
     for column in pro_prop.columns.tolist():
         pro.set_attr_value(column, pro_prop[column][i])
     load_processes.append(pro)
+    if pro.name == 'charging_station':
+        building_relevant_processes.append((i, 'inst_cap', charging_station_inst_cap))
+        building_relevant_processes.append((i, 'cap_up', charging_station_cap_up))
     building_relevant_processes.append((i, 'exist', pro_conf[pro_prop['name'][i]]))
 
 # define transmissions
-trafo = transmisson(name='trafo', commodity=electricity)
-new_trafo_160 = transmisson(name='new_trafo_160', commodity=electricity)
-new_trafo_250 = transmisson(name='new_trafo_250', commodity=electricity)
-new_trafo_400 = transmisson(name='new_trafo_400', commodity=electricity)
-new_trafo_630 = transmisson(name='new_trafo_630', commodity=electricity)
-# hvac = transmisson(name='hvac', commodity=electricity)
+trafo = transmisson(name='trafo', commodity='electricity')
+new_trafo_160 = transmisson(name='new_trafo_160', commodity='electricity')
+new_trafo_250 = transmisson(name='new_trafo_250', commodity='electricity')
+new_trafo_400 = transmisson(name='new_trafo_400', commodity='electricity')
+new_trafo_630 = transmisson(name='new_trafo_630', commodity='electricity')
+
 
 trafo_transmissions = [trafo, new_trafo_160, new_trafo_250, new_trafo_400, new_trafo_630]   # add transmissions at trafo-station here
 
@@ -94,7 +97,7 @@ trafo_transmissions = [trafo, new_trafo_160, new_trafo_250, new_trafo_400, new_t
 trafo_storages = []     # add storages at trafo-station here
 main_busbar_storages = []       # add storages at main busbar here
 load_storages = []    # add storages at every load here
-building_relevant_storages = [(2, 'inst_cap_c', mobility_storage_inst_cap_c), (2, 'cap_up_c', mobility_storage_cap_up_c)]     # place of storage in load_storages list, attribute of storage, value of attribute
+building_relevant_storages = []     # place of storage in load_storages list, attribute of storage, value of attribute
 
 sto_conf = pd.read_csv(sto_conf_path, sep=';')
 sto_prop = pd.read_csv(sto_prop_path, sep=';')
@@ -104,15 +107,18 @@ for i in range(len(sto_prop['name'])):
     for column in sto_prop.columns.tolist():
         sto.set_attr_value(column, sto_prop[column][i])
     load_storages.append(sto)
+    if sto.name == 'mobility_storage':
+        building_relevant_storages.append((i, 'inst_cap_c', mobility_storage_inst_cap_c))
+        building_relevant_storages.append((i, 'cap_up_c', mobility_storage_cap_up_c))
     building_relevant_storages.append((i, 'exist', sto_conf[sto_prop['name'][i]]))
 
 
-# # get building time series
-# needed_demand_name = ['HotWaterD_W', 'SpaceHeatingD_W', 'TotalD_W']
-# demand_commodities = [water_heat, space_heat, electricity]
+# get building time series
+needed_demand_name = ['HotWaterD_W', 'SpaceHeatingD_W', 'TotalD_W']
+demand_commodities = []
 
-# needed_supim_name = ['sol_gains_W']
-# supim_commodities = [solar]
+needed_supim_name = ['sol_gains_W']
+supim_commodities = []
 
-# needed_timevareff_name = ['Occupants']
-# timevareff_processes = [charging_station]
+needed_timevareff_name = ['Occupants']
+timevareff_processes = []
