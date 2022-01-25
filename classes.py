@@ -106,7 +106,7 @@ class process:
 
 class transmisson:
     def __init__(self, name='', site_in='', site_out='', commodity=commodity(), eff='1', inv_cost='0',
-                 fix_cost='0', var_cost='0', inst_cap='0', cap_lo='0', cap_up='inf', wacc='0.07', depreciation='30',
+                 fix_cost='0', var_cost='0', inst_cap='0', cap_lo='0', cap_up='inf', wacc='0.07', depreciation='40',
                  reactance='', difflimit='', base_voltage='', tra_block='', exist=1):
         self.name = name
         self.site_in = site_in
@@ -252,21 +252,24 @@ class storage:
 
 
 class demand:
-    def __init__(self, commodity=commodity(), value=[]):
+    def __init__(self, commodity=commodity(), value=[], exist=1):
         self.commodity = commodity
         self.value = value
+        self.exist = exist
 
 
 class supim:
-    def __init__(self, commodity=commodity(), value=[]):
+    def __init__(self, commodity=commodity(), value=[], exist=1):
         self.commodity = commodity
         self.value = value
+        self.exist = exist
 
 
 class time_var_eff:
-    def __init__(self, process=process(), value=[]):
+    def __init__(self, process=process(), value=[], exist=1):
         self.process = process
         self.value = value
+        self.exist = exist
 
 
 class site:

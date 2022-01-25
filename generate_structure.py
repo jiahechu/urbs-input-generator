@@ -1,8 +1,7 @@
-from distutils.command.build import build
-from json import loads
 from parameters import *
 from classes import *
 from copy import deepcopy
+from generate_mobility_information import generate_mobility_demand, generate_chargingstation_timevareff
 import pandas as pd
 
 
@@ -73,17 +72,24 @@ for tra in site_main_busbar.transmissions:
 # generate transmissions between loads according to the pandapower file
 load_transmissions = []
 pp_file_tra = pd.read_excel(pandapower_networks_path, sheet_name='line')
+vn_lv_kv = pd.read_excel(pandapower_networks_path, sheet_name='trafo')['vn_lv_kv'][0]
 for i in pp_file_tra.index:
     tra = pp_file_tra.iloc[i]
     site_in = tra['from_bus']
     site_out = tra['to_bus']
     if site_in == 1:
-        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in='main_busbar', site_out=selected_buildings.iloc[site_out-2]['urbs_name']))
-        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_out-2]['urbs_name'], site_out='main_busbar'))
+        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in='main_busbar',
+                                  site_out=selected_buildings.iloc[site_out-2]['urbs_name'], inst_cap=tra['max_i_ka'] * 1000 * vn_lv_kv,
+                                  inv_cost=1000 * tra['length_km'] * 1000 / (tra['max_i_ka'] * 1000 * vn_lv_kv)))
+        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_out-2]['urbs_name'], 
+                                  site_out='main_busbar', inst_cap=tra['max_i_ka'] * 1000 * vn_lv_kv, inv_cost=1000 * tra['length_km'] * 1000 / (tra['max_i_ka'] * 1000 * vn_lv_kv)))
     else:
-        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_in-2]['urbs_name'], site_out=selected_buildings.iloc[site_out-2]['urbs_name']))
-        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_out-2]['urbs_name'], site_out=selected_buildings.iloc[site_in-2]['urbs_name']))
-
+        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_in-2]['urbs_name'],
+                                  site_out=selected_buildings.iloc[site_out-2]['urbs_name'], inst_cap=tra['max_i_ka'] * 1000 * vn_lv_kv,
+                                  inv_cost=1000 * tra['length_km'] * 1000 / (tra['max_i_ka'] * 1000 * vn_lv_kv)))
+        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_out-2]['urbs_name'],
+                                  site_out=selected_buildings.iloc[site_in-2]['urbs_name'], inst_cap=tra['max_i_ka'] * 1000 * vn_lv_kv,
+                                  inv_cost=1000 * tra['length_km'] * 1000 / (tra['max_i_ka'] * 1000 * vn_lv_kv)))
 
 
 # assign storages to sites
@@ -98,20 +104,59 @@ for load in sites_load:
     i += 1
 
 
-# # get building demand time series
-# for i in range(len(needed_demand_name)):
-#     for load in sites_load:
-#         timeseries_file_name = timeseries_path+'/BuildingHeatDemand_3.0_2.0_0.0_bID-'+str(load.building_id)+'.0.csv'
-#         load.demands.append(demand(commodity=demand_commodities[i], value=pd.read_csv(timeseries_file_name)[needed_demand_name[i]]))
+# get building demand time series
+mob_dem = generate_mobility_demand(building_data_file_path, selected_buildings_path)
+j = 0
+for load in sites_load:
+    i = 0
+    dem_list = []
+    timeseries_file_name = timeseries_path+'/d-'+str(load.building_id)+'.csv'
+    demand_file = pd.read_csv(timeseries_file_name, sep=';')
+    for dem_name in needed_demand_name:
+        value=demand_file[dem_name].tolist()
+        value.insert(0, 0)
+        for com in load.commodities:
+            if demand_commodities[i].name == com.name and com.exist == 1:
+                dem_list.append(demand(commodity=demand_commodities[i], value=value))
+        i += 1
+    for com in load.commodities:
+        if com.name == 'mobility' and com.exist == 1:
+            dem_list.append(mob_dem[j])  
+    load.demands = deepcopy(dem_list)
+    j += 1
 
-# # get building supim time series
-# for i in range(len(needed_supim_name)):
-#     for load in sites_load:
-#         timeseries_file_name = timeseries_path+'/BuildingHeatDemand_3.0_2.0_0.0_bID-'+str(load.building_id)+'.0.csv'
-#         load.demands.append(supim(commodity=supim_commodities[i], value=pd.read_csv(timeseries_file_name)[needed_supim_name[i]]))
 
-# # get building time-var-eff time series
-# for i in range(len(needed_timevareff_name)):
-#     for load in sites_load:
-#         timeseries_file_name = timeseries_path+'/BuildingHeatDemand_3.0_2.0_0.0_bID-'+str(load.building_id)+'.0.csv'
-#         load.demands.append(time_var_eff(process=timevareff_processes[i], value=pd.read_csv(timeseries_file_name)[needed_timevareff_name[i]]))
+# get building supim time series
+for load in sites_load:
+    i = 0
+    supim_list = []
+    timeseries_file_name = timeseries_path+'/d-'+str(load.building_id)+'.csv'
+    supim_file = pd.read_csv(timeseries_file_name, sep=';')
+    for supim_name in needed_supim_name:
+        value=supim_file[supim_name].tolist()
+        value.insert(0, 0)
+        for com in load.commodities:
+            if supim_commodities[i].name == com.name and com.exist == 1:
+                supim_list.append(supim(commodity=supim_commodities[i], value=value))
+        i += 1
+    load.supim = deepcopy(supim_list)
+
+
+# get building time-var-eff time series
+char_sta_timevareff = generate_chargingstation_timevareff()
+for load in sites_load:
+    i = 0
+    cop_file = pd.read_csv(cop_file_path, sep=';')
+    timevareff_list = []
+    for timevareff_name in needed_timevareff_name:
+        value=cop_file[timevareff_name].tolist()
+        value.insert(0, 0)
+        for pro in load.processes:
+            if timevareff_processes[i].name == pro.name and pro.exist == 1:
+                timevareff_list.append(time_var_eff(process=timevareff_processes[i], value=value))
+        i += 1
+    load.time_var_eff = deepcopy(timevareff_list)
+    for pro in load.processes:
+        if pro.name == 'charging_station' and pro.exist == 1:
+            load.time_var_eff.append(char_sta_timevareff)
+        

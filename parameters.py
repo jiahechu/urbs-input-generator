@@ -4,9 +4,10 @@ from get_building_data import get_building_data
 
 save_path = './urbs-test.xlsx'                      # path to save exported excel file
 building_data_file_path = './dataset/building_data/building_data2.csv'    # path of building information file
-pandapower_networks_path = './dataset/pandapower-networks'  # path which includes pandapower network files
+pandapower_networks_path = './dataset/pandapower-networks'  # path which contains pandapower network files
 selected_buildings_path = './dataset/selected_buildings.csv' # path of selected buildings file
-timeseries_path = './dataset/building_data/time_series_per_building'      # path which includes building informations in time series
+timeseries_path = './dataset/building_data/time_series_per_building'      # path which contains building informations in time series
+cop_file_path = './dataset/building_data/cop_no_formula.csv'    # path of cop file
 
 # define some building relevanted parameters
 building_data = get_building_data(building_data_file_path, selected_buildings_path)
@@ -86,11 +87,11 @@ building_relevant_storages = [(2, 'inst_cap_c', mobility_storage_inst_cap_c), (2
 
 
 # get building time series
-needed_demand_name = ['HotWaterD_W', 'SpaceHeatingD_W', 'TotalD_W']
+needed_demand_name = ['HotWaterD_W', 'SpaceHeatingD_W', 'ActiveLoadMatlab']
 demand_commodities = [water_heat, space_heat, electricity]
 
 needed_supim_name = ['sol_gains_W']
 supim_commodities = [solar]
 
-needed_timevareff_name = ['Occupants']
-timevareff_processes = [charging_station]
+needed_timevareff_name = ['MFH_LuftWP_aggr.']
+timevareff_processes = [heatpump_air]

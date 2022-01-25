@@ -116,3 +116,31 @@ storage_df = pd.DataFrame(storage_tuple, columns=['Site', 'Storage', 'Commodity'
                                                   'eff-out', 'inv-cost-p', 'inv-cost-c', 'fix-cost-p', 'fix-cost-c', 'var-cost-p', 'var-cost-c', 'wacc', 'depreciation',
                                                   'init', 'discharge', 'ep-ratio', 'c-block', 'p-block'])
 
+
+# generate demand tuple
+demand_dic = {'t': range(8761), 'weight_typeperiod': ['']*8761, 'Trafostation_OS.electricity': [0]*8761, 'main_busbar.electricity': [0]*8761}
+for load in sites_load:
+    for dem in load.demands:
+        demand_dic[load.name+'.'+dem.commodity.name] = dem.value
+demand_df = pd.DataFrame(demand_dic)
+
+
+# generate supim tuple
+supim_dic = {'t': range(8761)}
+for load in sites_load:
+    for sup in load.supim:
+        supim_dic[load.name+'.'+sup.commodity.name] = sup.value
+supim_df = pd.DataFrame(supim_dic)
+
+
+# generate buy-sell-price tuple
+buy_sell_dic = {'t': range(8761), 'electricity_import': [elec_import_price]*8761, 'electricity_feed_in': [elec_feed_in_price]*8761}
+buy_sell_df = pd.DataFrame(buy_sell_dic)
+
+
+# generate time-var-eff tuple
+timevareff_dic = {'t': range(8761)}
+for load in sites_load:
+    for tve in load.time_var_eff:
+        timevareff_dic[load.name+'.'+tve.process.name] = tve.value
+timevareff_df = pd.DataFrame(timevareff_dic)
