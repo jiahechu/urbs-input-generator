@@ -4,7 +4,7 @@ import pandas as pd
 
 # generate global sheet tuple
 global_tuple = [('CO2 limit', co2_limit), ('Cost limit', cost_limit)]
-global_df = pd.DataFrame(global_tuple, columns=['Property', 'Value'])
+global_df = pd.DataFrame(global_tuple, columns=['Property', 'value'])
 
 
 # generate site sheet tuple 

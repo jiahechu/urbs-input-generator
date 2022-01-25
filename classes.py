@@ -31,7 +31,7 @@ class process:
     def __init__(self, name='', inst_cap='0', cap_lo='0', cap_up='inf', max_grad='inf', ramp_down_grad='0',
                  min_fraction='0', inv_cost='0', fix_cost='0', var_cost='0', wacc='0.07', depreciation='30',
                  area_per_cap='', cap_block='', start_price='',	on_off='', pf_min='', com_in=[],
-                 com_out=[], ratio='', ratio_min='0', exist=1):
+                 com_out=[], ratio='1', ratio_min='0', exist=1):
         self.name = name
         self.inst_cap = inst_cap
         self.cap_lo = cap_lo
