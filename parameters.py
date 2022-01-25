@@ -8,7 +8,8 @@ save_path = './urbs-test.xlsx'                      # path to save exported exce
 building_data_file_path = './dataset/building_data/building_data2.csv'    # path of building information file
 pandapower_networks_path = './dataset/pandapower-networks/kerber_landnetz_freileitung_1.xlsx'  # path which includes pandapower network files
 selected_buildings_path = './dataset/selected_buildings.csv' # path of selected buildings file
-timeseries_path = './time_series_per_building'      # path which includes building informations in time series
+timeseries_path = './dataset/building_data/time_series_per_building'      # path which includes building informations in time series
+cop_file_path = './dataset/building_data/cop_no_formula.csv'    # path of cop file
 
 com_conf_path = './dataset/conf/com_conf.csv'
 pro_conf_path = './dataset/conf/pro_conf.csv'
@@ -114,11 +115,12 @@ for i in range(len(sto_prop['name'])):
 
 
 # get building time series
-needed_demand_name = ['HotWaterD_W', 'SpaceHeatingD_W', 'TotalD_W']
-demand_commodities = []
+# get building time series
+needed_demand_name = ['HotWaterD_W', 'SpaceHeatingD_W', 'ActiveLoadMatlab']
+demand_commodities = ['water_heat', 'space_heat', 'electricity']
 
 needed_supim_name = ['sol_gains_W']
-supim_commodities = []
+supim_commodities = ['solar']
 
-needed_timevareff_name = ['Occupants']
-timevareff_processes = []
+needed_timevareff_name = ['MFH_LuftWP_aggr.']
+timevareff_processes = ['heatpump_air']
