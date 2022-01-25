@@ -4,7 +4,7 @@ import pandas as pd
 
 # generate global sheet tuple
 global_tuple = [('CO2 limit', co2_limit), ('Cost limit', cost_limit)]
-global_df = pd.DataFrame(global_tuple, columns=['Property', 'Value'])
+global_df = pd.DataFrame(global_tuple, columns=['Property', 'value'])
 
 
 # generate site sheet tuple 
@@ -58,19 +58,19 @@ process_df = pd.DataFrame(process_tuple, columns=['Site', 'Process', 'inst-cap',
 process_commodity_tuple = []
 for pro in site_trafo.processes:
     for com_in in pro.com_in:
-        process_commodity_tuple.append((pro.name, com_in.name, 'in', pro.ratio, pro.ratio_min))
+        process_commodity_tuple.append((pro.name, com_in.name, 'In', pro.ratio, pro.ratio_min))
     for com_out in pro.com_out:
-        process_commodity_tuple.append((pro.name, com_out.name, 'out', pro.ratio, pro.ratio_min))
+        process_commodity_tuple.append((pro.name, com_out.name, 'Out', pro.ratio, pro.ratio_min))
 for pro in site_main_busbar.processes:
     for com_in in pro.com_in:
-        process_commodity_tuple.append((pro.name, com_in.name, 'in', pro.ratio, pro.ratio_min))
+        process_commodity_tuple.append((pro.name, com_in.name, 'In', pro.ratio, pro.ratio_min))
     for com_out in pro.com_out:
-        process_commodity_tuple.append((pro.name, com_out.name, 'out', pro.ratio, pro.ratio_min))
+        process_commodity_tuple.append((pro.name, com_out.name, 'Out', pro.ratio, pro.ratio_min))
 for pro in sites_load[0].processes:
     for com_in in pro.com_in:
-        process_commodity_tuple.append((pro.name, com_in.name, 'in', pro.ratio, pro.ratio_min))
+        process_commodity_tuple.append((pro.name, com_in.name, 'In', pro.ratio, pro.ratio_min))
     for com_out in pro.com_out:
-        process_commodity_tuple.append((pro.name, com_out.name, 'out', pro.ratio, pro.ratio_min))
+        process_commodity_tuple.append((pro.name, com_out.name, 'Out', pro.ratio, pro.ratio_min))
 process_commodity_df = pd.DataFrame(process_commodity_tuple, columns=['Process', 'Commodity', 'Direction', 'ratio',	'ratio-min'])
 
 

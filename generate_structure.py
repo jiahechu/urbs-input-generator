@@ -113,7 +113,7 @@ for load in sites_load:
     timeseries_file_name = timeseries_path+'/d-'+str(load.building_id)+'.csv'
     demand_file = pd.read_csv(timeseries_file_name, sep=';')
     for dem_name in needed_demand_name:
-        value=demand_file[dem_name].tolist()
+        value = demand_file[dem_name].tolist()
         value.insert(0, 0)
         for com in load.commodities:
             if demand_commodities[i].name == com.name and com.exist == 1:
@@ -133,7 +133,7 @@ for load in sites_load:
     timeseries_file_name = timeseries_path+'/d-'+str(load.building_id)+'.csv'
     supim_file = pd.read_csv(timeseries_file_name, sep=';')
     for supim_name in needed_supim_name:
-        value=supim_file[supim_name].tolist()
+        value = [i / 100000 for i in supim_file[supim_name].tolist()]
         value.insert(0, 0)
         for com in load.commodities:
             if supim_commodities[i].name == com.name and com.exist == 1:
@@ -149,7 +149,7 @@ for load in sites_load:
     cop_file = pd.read_csv(cop_file_path, sep=';')
     timevareff_list = []
     for timevareff_name in needed_timevareff_name:
-        value=cop_file[timevareff_name].tolist()
+        value = cop_file[timevareff_name].tolist()
         value.insert(0, 0)
         for pro in load.processes:
             if timevareff_processes[i].name == pro.name and pro.exist == 1:
