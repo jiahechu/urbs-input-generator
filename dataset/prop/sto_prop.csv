@@ -1,4 +1,4 @@
 ﻿name;commodity;inst_cap_c;cap_lo_c;cap_up_c;inst_cap_p;cap_lo_p;cap_up_p;eff_in;eff_out;inv_cost_p;inv_cost_c;fix_cost_p;fix_cost_c;var_cost_p;var_cost_c;wacc;depreciation;init;discharge;ep_ratio;c_block;p_block
-battery_private;;;;;;;;;;;;;;;;;;;;;;
-thermochem_heat_storage;;;;;;;;;;;;;;;;;;;;;;
-mobility_storage;;;;;;;;;;;;;;;;;;;;;;
+battery_private;electricity;0;0;999;0;0;999;0,96;1;0;500;0;5;0;0;0,07;20;;0;3;#N/A;#N/A
+thermochem_heat_storage;common_heat;0;0;999;0;0;999;0,9;1;99;200;0;0;0;0;0,07;20;;0;;#N/A;#N/A
+mobility_storage;mobility;10,32;0;10,32;999;0;999;1;1;0; -   ;0;0;0;0;0,07;20;;0;;#N/A;#N/A

@@ -62,16 +62,16 @@ for i in pp_file_tra.index:
     site_in = tra['from_bus']
     site_out = tra['to_bus']
     if site_in == 1:
-        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in='main_busbar',
+        load_transmissions.append(transmisson(name=tra['name'], commodity='electricity', site_in='main_busbar',
                                   site_out=selected_buildings.iloc[site_out-2]['urbs_name'], inst_cap=tra['max_i_ka'] * 1000 * vn_lv_kv,
                                   inv_cost=1000 * tra['length_km'] * 1000 / (tra['max_i_ka'] * 1000 * vn_lv_kv)))
-        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_out-2]['urbs_name'], 
+        load_transmissions.append(transmisson(name=tra['name'], commodity='electricity', site_in=selected_buildings.iloc[site_out-2]['urbs_name'], 
                                   site_out='main_busbar', inst_cap=tra['max_i_ka'] * 1000 * vn_lv_kv, inv_cost=1000 * tra['length_km'] * 1000 / (tra['max_i_ka'] * 1000 * vn_lv_kv)))
     else:
-        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_in-2]['urbs_name'],
+        load_transmissions.append(transmisson(name=tra['name'], commodity='electricity', site_in=selected_buildings.iloc[site_in-2]['urbs_name'],
                                   site_out=selected_buildings.iloc[site_out-2]['urbs_name'], inst_cap=tra['max_i_ka'] * 1000 * vn_lv_kv,
                                   inv_cost=1000 * tra['length_km'] * 1000 / (tra['max_i_ka'] * 1000 * vn_lv_kv)))
-        load_transmissions.append(transmisson(name=tra['name'], commodity=electricity, site_in=selected_buildings.iloc[site_out-2]['urbs_name'],
+        load_transmissions.append(transmisson(name=tra['name'], commodity='electricity', site_in=selected_buildings.iloc[site_out-2]['urbs_name'],
                                   site_out=selected_buildings.iloc[site_in-2]['urbs_name'], inst_cap=tra['max_i_ka'] * 1000 * vn_lv_kv,
                                   inv_cost=1000 * tra['length_km'] * 1000 / (tra['max_i_ka'] * 1000 * vn_lv_kv)))
 
@@ -117,7 +117,7 @@ for load in sites_load:
     timeseries_file_name = timeseries_path+'/d-'+str(load.building_id)+'.csv'
     supim_file = pd.read_csv(timeseries_file_name, sep=';')
     for supim_name in needed_supim_name:
-        value=supim_file[supim_name].tolist()
+        value=[i / 100000 for i in supim_file[supim_name].tolist()]
         value.insert(0, 0)
         for com in load.commodities:
             if supim_commodities[i] == com.name and com.exist == 1:

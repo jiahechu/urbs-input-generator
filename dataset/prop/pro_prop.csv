@@ -1,8 +1,8 @@
 ﻿name;inst_cap;cap_lo;cap_up;max_grad;ramp_down_grad;min_fraction;inv_cost;fix_cost;var_cost;wacc;depreciation;area_per_cap;cap_block;start_price;on_off;pf_min;com_in;com_out;ratio;ratio_min
-rooftop_pv;;;;;;;;;;;;;;;;;;;;
-gas_boiler;;;;;;;;;;;;;;;;;;;;
-heat_dummy_space;;;;;;;;;;;;;;;;;;;;
-heat_dummpy_water;;;;;;;;;;;;;;;;;;;;
-heatpump_air;;;;;;;;;;;;;;;;;;;;
-charging_station;;;;;;;;;;;;;;;;;;;;
-curtailment;;;;;;;;;;;;;;;;;;;;
+rooftop_pv;0;0;15;inf;inf;0;1027,667;20,553;0;0,021;25;;;;;;;;;
+gas_boiler;900;0;900;inf;inf;0;0;0;0;0,07;30;;;;;;;;;
+heat_dummy_space;0;0;inf;inf;inf;0;0;0;0;0,07;1;;;;;;;;;
+heat_dummy_water;0;0;inf;inf;inf;0;0;0;0;0,07;1;;;;;;;;;
+heatpump_air;0;0;inf;inf;inf;0;3450;120,75;0;0,07;20;;;;;;;;;
+charging_station;0;0;0;inf;inf;0;0;0;0;0,07;1;;;;;;;;;
+curtailment;0;0;inf;inf;inf;0;0;0;0;0,07;20;;;;;;;;;
