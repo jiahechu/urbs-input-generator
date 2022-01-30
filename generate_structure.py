@@ -25,7 +25,7 @@ if kerber_network_name == 'dn':
 site_trafo = site(name='Trafostation_OS', pp_id=0)
 site_main_busbar = site(name='main_busbar', pp_id=1)
 sites_load = []
-selected_buildings = pd.read_csv(selected_buildings_path, sep=';')
+selected_buildings = pd.read_csv(selected_buildings_path, sep=',')
 pp_id = selected_buildings['pandapower_id'].tolist()
 urbs_name = selected_buildings['urbs_name'].tolist()
 bui_id = selected_buildings['building_id'].tolist()
@@ -128,17 +128,12 @@ for load in sites_load:
 
 # get building supim time series
 for load in sites_load:
-    i = 0
     supim_list = []
-    timeseries_file_name = timeseries_path+'/d-'+str(load.building_id)+'.csv'
-    supim_file = pd.read_csv(timeseries_file_name, sep=';')
-    for supim_name in needed_supim_name:
-        value = [i / 100000 for i in supim_file[supim_name].tolist()]
-        value.insert(0, 0)
-        for com in load.commodities:
-            if supim_commodities[i].name == com.name and com.exist == 1:
-                supim_list.append(supim(commodity=supim_commodities[i], value=value))
-        i += 1
+    supim_file = pd.read_csv(supim_file_path, sep=',')
+    value = supim_file[str(load.building_id)].tolist()
+    for com in load.commodities:
+        if 'solar' == com.name and com.exist == 1:
+            supim_list.append(supim(commodity=solar, value=value))
     load.supim = deepcopy(supim_list)
 
 
@@ -146,7 +141,7 @@ for load in sites_load:
 char_sta_timevareff = generate_chargingstation_timevareff()
 for load in sites_load:
     i = 0
-    cop_file = pd.read_csv(cop_file_path, sep=';')
+    cop_file = pd.read_csv(cop_file_path, sep=',')
     timevareff_list = []
     for timevareff_name in needed_timevareff_name:
         value = cop_file[timevareff_name].tolist()

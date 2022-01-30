@@ -8,6 +8,7 @@ pandapower_networks_path = './dataset/pandapower-networks'  # path which contain
 selected_buildings_path = './dataset/selected_buildings.csv' # path of selected buildings file
 timeseries_path = './dataset/building_data/time_series_per_building'      # path which contains building informations in time series
 cop_file_path = './dataset/building_data/cop_no_formula.csv'    # path of cop file
+supim_file_path = './dataset/building_data/supim.csv'   # path of supim file
 
 # define some building relevanted parameters
 building_data = get_building_data(building_data_file_path, selected_buildings_path)
@@ -25,8 +26,8 @@ kerber_network_name = 'ln-f1'   # ln-f1, ln-f2, ln-k1, ln-k2, dn, vn-k1, vn-k2
 lines_number = 0
 loads_number = []
 
-elec_import_price = '0,3'
-elec_feed_in_price = '0,07'
+elec_import_price = 0.3
+elec_feed_in_price = 0.07
 
 
 # define commodities
