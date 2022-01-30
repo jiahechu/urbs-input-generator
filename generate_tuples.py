@@ -55,7 +55,7 @@ process_df = pd.DataFrame(process_tuple, columns=['Site', 'Process', 'inst-cap',
 
 
 # generate process-comodity sheet tuple
-process_commodity_df = pd.read_csv('./dataset/prop/pro_com_prop.csv',sep=';')
+process_commodity_df = pd.read_csv('./dataset/prop/pro_com_prop.csv',sep=',')
 
 
 # generate transmission sheet tuple

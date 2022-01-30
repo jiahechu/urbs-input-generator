@@ -10,6 +10,7 @@ pandapower_networks_path = './dataset/pandapower-networks/kerber_landnetz_freile
 selected_buildings_path = './dataset/selected_buildings.csv' # path of selected buildings file
 timeseries_path = './dataset/building_data/time_series_per_building'      # path which includes building informations in time series
 cop_file_path = './dataset/building_data/cop_no_formula.csv'    # path of cop file
+supim_file_path = './dataset/building_data/supim.csv'   # path of supim file
 
 com_conf_path = './dataset/conf/com_conf.csv'
 pro_conf_path = './dataset/conf/pro_conf.csv'
@@ -35,8 +36,8 @@ kerber_network_name = 'ln-f1'   # ln-f1, ln-f2, ln-k1, ln-k2, dn, vn-k1, vn-k2
 lines_number = 0
 loads_number = []
 
-elec_import_price = '0,3'
-elec_feed_in_price = '0,07'
+elec_import_price = 0.3
+elec_feed_in_price = 0.07
 
 
 # define commodities
@@ -49,8 +50,8 @@ main_busbar_commodities = [electricity]     # add commodities at main busbar her
 load_commodities = []    # add commodities at every load here
 building_relevant_commodities = []  # place of commodity in load_commodities list, attribute of commodity, value of attribute
 
-com_conf = pd.read_csv(com_conf_path, sep=';')
-com_prop = pd.read_csv(com_prop_path, sep=';')
+com_conf = pd.read_csv(com_conf_path, sep=',')
+com_prop = pd.read_csv(com_prop_path, sep=',')
 
 for i in range(len(com_prop['name'])):
     com = commodity()
@@ -70,8 +71,8 @@ main_busbar_processes = []      # add processes at main busbar here
 load_processes = []     # add processes at every load here
 building_relevant_processes = []    # place of process in load_processes list, attribute of process, value of attribute
 
-pro_conf = pd.read_csv(pro_conf_path, sep=';')
-pro_prop = pd.read_csv(pro_prop_path, sep=';')
+pro_conf = pd.read_csv(pro_conf_path, sep=',')
+pro_prop = pd.read_csv(pro_prop_path, sep=',')
 
 for i in range(len(pro_prop['name'])):
     pro = process()
@@ -100,8 +101,8 @@ main_busbar_storages = []       # add storages at main busbar here
 load_storages = []    # add storages at every load here
 building_relevant_storages = []     # place of storage in load_storages list, attribute of storage, value of attribute
 
-sto_conf = pd.read_csv(sto_conf_path, sep=';')
-sto_prop = pd.read_csv(sto_prop_path, sep=';')
+sto_conf = pd.read_csv(sto_conf_path, sep=',')
+sto_prop = pd.read_csv(sto_prop_path, sep=',')
 
 for i in range(len(sto_prop['name'])):
     sto = storage()
