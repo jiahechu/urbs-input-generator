@@ -23,6 +23,7 @@ sto_prop_path = './dataset/prop/sto_prop.csv'
 # define some building relevanted parameters
 building_data = get_building_data(building_data_file_path, selected_buildings_path)
 
+pv_cap_up = building_data['footprint_area'].tolist()
 charging_station_inst_cap = [i * 11 for i in building_data['number_of_cars'].tolist()]
 charging_station_cap_up = [i * 11 for i in building_data['number_of_cars'].tolist()]
 mobility_storage_inst_cap_c = [i * 100 for i in building_data['car_demand_daily_total_MW'].tolist()]
@@ -82,6 +83,8 @@ for i in range(len(pro_prop['name'])):
     if pro.name == 'charging_station':
         building_relevant_processes.append((i, 'inst_cap', charging_station_inst_cap))
         building_relevant_processes.append((i, 'cap_up', charging_station_cap_up))
+    if pro.name == 'rooftop_pv':
+        building_relevant_processes.append((i, 'cap_up', pv_cap_up))
     building_relevant_processes.append((i, 'exist', pro_conf[pro_prop['name'][i]]))
 
 # define transmissions
