@@ -13,6 +13,8 @@ supim_file_path = './dataset/building_data/supim.csv'   # path of supim file
 # define some building relevanted parameters
 building_data = get_building_data(building_data_file_path, selected_buildings_path)
 
+
+pv_cap_up = building_data['footprint_area'].to_list()
 charging_station_inst_cap = [i * 11 for i in building_data['number_of_cars'].tolist()]
 charging_station_cap_up = [i * 11 for i in building_data['number_of_cars'].tolist()]
 mobility_storage_inst_cap_c = [i * 100 for i in building_data['car_demand_daily_total_MW'].tolist()]
@@ -63,7 +65,7 @@ curtailment = process(name='curtailment', com_in=[electricity])
 trafo_processes = [import_trafo, feed_in, slack]    # add processes at trafo-station here
 main_busbar_processes = []      # add processes at main busbar here
 load_processes = [rooftop_pv, gas_boiler, heat_dummy_space, heat_dummy_water, heatpump_air, charging_station, curtailment]     # add processes at every load here
-building_relevant_processes = [(5, 'inst_cap', charging_station_inst_cap), (5, 'cap_up', charging_station_cap_up)]    # place of process in load_processes list, attribute of process, value of attribute
+building_relevant_processes = [(5, 'inst_cap', charging_station_inst_cap), (5, 'cap_up', charging_station_cap_up), (0, 'cap_up', pv_cap_up)]    # place of process in load_processes list, attribute of process, value of attribute
 
 
 # define transmissions
